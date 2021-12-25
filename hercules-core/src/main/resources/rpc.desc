@@ -1,0 +1,9 @@
+
+¹
+	rpc.protohercules"4
+PingRequest%
+send_timestamp (RsendTimestamp"I
+ErrorResponse
+	errorCode (R	errorCode
+errorMsg (	RerrorMsgB!
+org.hercules.protoBRpcRequests

@@ -1,0 +1,17 @@
+syntax="proto2";
+
+package hercules;
+
+option java_package="org.hercules.proto";
+option java_outer_classname = "RpcRequests";
+
+message PingRequest {
+  required int64 send_timestamp = 1;
+}
+
+message ErrorResponse {
+  required int32 errorCode = 1;
+  optional string errorMsg = 2;
+}
+
+
