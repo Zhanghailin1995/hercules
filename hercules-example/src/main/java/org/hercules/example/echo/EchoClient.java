@@ -2,6 +2,7 @@ package org.hercules.example.echo;
 
 import org.hercules.RpcClient;
 import org.hercules.RpcFactory;
+import org.hercules.proto.RpcRequests;
 import org.hercules.util.Endpoint;
 import org.hercules.util.RpcFactoryHelper;
 
@@ -27,6 +28,19 @@ public class EchoClient {
         // create
         final RpcClient client = rpcFactory.createRpcClient();
         client.init(null);
+
+
+
+        final RpcRequests.PingRequest ping = RpcRequests.PingRequest.newBuilder() //
+                .setSendTimestamp(System.currentTimeMillis()) //
+                .build();
+
+        try {
+            final Object resp = client.invokeSync(target, ping, 3000);
+            System.out.println(resp);
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
 
         for (int i = 0; i < 15; i++) {
             final Echo.EchoRequest req = Echo.EchoRequest.newBuilder() //

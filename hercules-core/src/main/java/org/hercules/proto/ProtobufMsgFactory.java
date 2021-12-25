@@ -25,7 +25,6 @@ import com.sun.xml.internal.ws.encoding.soap.SerializationException;
 import org.hercules.RpcFactory;
 import org.hercules.error.MessageClassNotFoundException;
 import org.hercules.util.RpcFactoryHelper;
-import org.hercules.util.Utils;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -83,23 +82,23 @@ public class ProtobufMsgFactory {
         }
     }
 
-    static {
-        final RpcFactory rpcFactory = RpcFactoryHelper.rpcFactory();
-        // use descriptor full name replace class name for support cross language call
-        if (rpcFactory.factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC)
-        ) {
-            if (Utils.isRpcProcessorInterestPreferProtoName()) {
-                rpcFactory.registerProtobufSerializer(RpcRequests.PingRequest.getDescriptor().getFullName(),
-                        RpcRequests.PingRequest.getDefaultInstance(), RpcRequests.ErrorResponse.getDefaultInstance());
-            } else {
-                rpcFactory.registerProtobufSerializer(RpcRequests.PingRequest.class.getName(),
-                        RpcRequests.PingRequest.getDefaultInstance(), RpcRequests.ErrorResponse.getDefaultInstance());
-            }
-        } else {
-            rpcFactory.registerProtobufSerializer(RpcRequests.PingRequest.class.getName(), ProtobufSerializer.INSTANCE);
-            rpcFactory.registerProtobufSerializer(RpcRequests.ErrorResponse.class.getName(), ProtobufSerializer.INSTANCE);
-        }
-    }
+//    static {
+//        final RpcFactory rpcFactory = RpcFactoryHelper.rpcFactory();
+//        // use descriptor full name replace class name for support cross language call
+//        if (rpcFactory.factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC)
+//        ) {
+//            if (Utils.isRpcProcessorInterestPreferProtoName()) {
+//                rpcFactory.registerProtobufSerializer(RpcRequests.PingRequest.getDescriptor().getFullName(),
+//                        RpcRequests.PingRequest.getDefaultInstance(), RpcRequests.ErrorResponse.getDefaultInstance());
+//            } else {
+//                rpcFactory.registerProtobufSerializer(RpcRequests.PingRequest.class.getName(),
+//                        RpcRequests.PingRequest.getDefaultInstance(), RpcRequests.ErrorResponse.getDefaultInstance());
+//            }
+//        } else {
+//            rpcFactory.registerProtobufSerializer(RpcRequests.PingRequest.class.getName(), ProtobufSerializer.INSTANCE);
+//            rpcFactory.registerProtobufSerializer(RpcRequests.ErrorResponse.class.getName(), ProtobufSerializer.INSTANCE);
+//        }
+//    }
 
     public static void load() {
         if (PARSE_METHODS_4J.isEmpty() || PARSE_METHODS_4PROTO.isEmpty() || DEFAULT_INSTANCE_METHODS_4J.isEmpty()) {

@@ -15,7 +15,9 @@ import org.junit.Test;
 public class RpcRequestsTest {
 
     @Test
-    public void testPingRequest()  throws InterruptedException {
+    public void testPingRequest() throws InterruptedException {
+
+        System.setProperty("hercules.rpc.rpc_processor_interest_prefer_proto_name", "true");
         ProtobufMsgFactory.load();
 
         final RpcServer server = RpcFactoryHelper.rpcFactory().createRpcServer(new Endpoint("127.0.0.1", 19991));

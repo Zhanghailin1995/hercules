@@ -2,6 +2,7 @@ package org.hercules.example.echo;
 
 import org.hercules.RpcFactory;
 import org.hercules.RpcServer;
+import org.hercules.impl.PingRequestProcessor;
 import org.hercules.util.Endpoint;
 import org.hercules.util.RpcFactoryHelper;
 
@@ -27,6 +28,7 @@ public class EchoServer {
         final RpcServer server = rpcFactory.createRpcServer(new Endpoint("127.0.0.1", 19992));
 
         // if use BOLT, The second and subsequent parameters are not required
+        server.registerProcessor(new PingRequestProcessor());
         server.registerProcessor(new EchoRequestProcessor());
 
         server.init(null);

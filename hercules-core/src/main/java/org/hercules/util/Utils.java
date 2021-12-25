@@ -1,6 +1,8 @@
 package org.hercules.util;
 
 import io.grpc.netty.shaded.io.netty.util.internal.SystemPropertyUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * org.hercules.util.Utils
@@ -8,7 +10,7 @@ import io.grpc.netty.shaded.io.netty.util.internal.SystemPropertyUtil;
  * @author zhanghailin
  */
 public final class Utils {
-
+    private static final Logger LOG = LoggerFactory.getLogger(Utils.class);
     /**
      * The configured number of available processors. The default is
      * {@link Runtime#availableProcessors()}. This can be overridden by setting the system property
@@ -34,6 +36,7 @@ public final class Utils {
     }
 
     public static boolean isRpcProcessorInterestPreferProtoName() {
+        LOG.info("hercules.rpc.rpc_processor_interest_prefer_proto_name: {}", RPC_PROCESSOR_INTEREST_PREFER_PROTO_NAME);
         return RPC_PROCESSOR_INTEREST_PREFER_PROTO_NAME;
     }
 }

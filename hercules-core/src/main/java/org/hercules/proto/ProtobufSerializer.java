@@ -25,6 +25,8 @@ import com.alipay.remoting.rpc.ResponseCommand;
 import com.alipay.remoting.rpc.protocol.RpcRequestCommand;
 import com.alipay.remoting.rpc.protocol.RpcResponseCommand;
 import com.google.protobuf.Message;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * RPC custom serializer based on protobuf
@@ -35,8 +37,9 @@ import com.google.protobuf.Message;
  */
 public class ProtobufSerializer implements CustomSerializer {
 
-    public static final ProtobufSerializer INSTANCE = new ProtobufSerializer();
+    private static final Logger LOG = LoggerFactory.getLogger(ProtobufSerializer.class);
 
+    public static final ProtobufSerializer INSTANCE = new ProtobufSerializer();
 
     @Override
     public <T extends RequestCommand> boolean serializeHeader(T request, InvokeContext invokeContext)
@@ -63,6 +66,7 @@ public class ProtobufSerializer implements CustomSerializer {
     @Override
     public <T extends RequestCommand> boolean serializeContent(T request, InvokeContext invokeContext)
             throws SerializationException {
+        LOG.info("serialize content: clazz: {}, custom serializer: {}", request.getClass().getName(), this.getClass().getName());
         final RpcRequestCommand cmd = (RpcRequestCommand) request;
         final Message msg = (Message) cmd.getRequestObject();
         cmd.setContent(msg.toByteArray());
@@ -71,6 +75,7 @@ public class ProtobufSerializer implements CustomSerializer {
 
     @Override
     public <T extends ResponseCommand> boolean serializeContent(T response) throws SerializationException {
+        LOG.info("serialize content: clazz: {}, custom serializer: {}", response.getClass().getName(), this.getClass().getName());
         final RpcResponseCommand cmd = (RpcResponseCommand) response;
         final Message msg = (Message) cmd.getResponseObject();
         cmd.setContent(msg.toByteArray());
@@ -79,6 +84,7 @@ public class ProtobufSerializer implements CustomSerializer {
 
     @Override
     public <T extends RequestCommand> boolean deserializeContent(T request) throws DeserializationException {
+        LOG.info("deserialize content: clazz: {}, custom serializer: {}", request.getClass().getName(), this.getClass().getName());
         final RpcRequestCommand cmd = (RpcRequestCommand) request;
         final String className = cmd.getRequestClass();
         cmd.setRequestObject(ProtobufMsgFactory.newMessageByJavaClassName(className, request.getContent()));
@@ -88,6 +94,7 @@ public class ProtobufSerializer implements CustomSerializer {
     @Override
     public <T extends ResponseCommand> boolean deserializeContent(T response, InvokeContext invokeContext)
             throws DeserializationException {
+        LOG.info("deserialize content: clazz: {}, custom serializer: {}", response.getClass().getName(), this.getClass().getName());
         final RpcResponseCommand cmd = (RpcResponseCommand) response;
         final String className = cmd.getResponseClass();
         cmd.setResponseObject(ProtobufMsgFactory.newMessageByJavaClassName(className, response.getContent()));

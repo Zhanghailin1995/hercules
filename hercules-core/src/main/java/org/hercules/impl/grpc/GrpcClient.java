@@ -130,11 +130,6 @@ public class GrpcClient implements RpcClient {
         });
     }
 
-//    @Override
-//    public void registerProtobufSerializer(String className, Object... args) {
-//        this.parserClasses.put(className, (Message) args[0]);
-//        this.marshallerRegistry.registerResponseInstance(className, (Message) args[1]);
-//    }
 
     private MethodDescriptor<Message, Message> getCallMethod(final Object request) {
         // use descriptor full name replace  class name for support cross language call

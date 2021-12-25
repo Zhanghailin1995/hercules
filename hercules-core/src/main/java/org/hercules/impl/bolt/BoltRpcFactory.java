@@ -10,6 +10,8 @@ import org.hercules.RpcClient;
 import org.hercules.RpcFactory;
 import org.hercules.RpcServer;
 import org.hercules.option.RpcOptions;
+import org.hercules.proto.ProtobufSerializer;
+import org.hercules.proto.RpcRequests;
 import org.hercules.util.Endpoint;
 import org.hercules.util.Requires;
 import org.hercules.util.RpcFactoryHelper;
@@ -31,6 +33,11 @@ public class BoltRpcFactory implements RpcFactory {
     static final int CHANNEL_WRITE_BUF_HIGH_WATER_MARK = SystemPropertyUtil.getInt(
             "hercules.bolt.channel_write_buf_high_water_mark",
             512 * 1024);
+
+    static {
+        CustomSerializerManager.registerCustomSerializer(RpcRequests.PingRequest.class.getName(), ProtobufSerializer.INSTANCE);
+        CustomSerializerManager.registerCustomSerializer(RpcRequests.ErrorResponse.class.getName(), ProtobufSerializer.INSTANCE);
+    }
 
     @Override
     public RpcFactoryHelper.RpcFactoryType factoryType() {

@@ -9,10 +9,8 @@ import org.hercules.RpcClient;
 import org.hercules.RpcFactory;
 import org.hercules.RpcResponseFactory;
 import org.hercules.RpcServer;
-import org.hercules.util.Endpoint;
-import org.hercules.util.Requires;
-import org.hercules.util.RpcFactoryHelper;
-import org.hercules.util.SPI;
+import org.hercules.proto.RpcRequests;
+import org.hercules.util.*;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,11 +35,11 @@ public class GrpcRpcFactory implements RpcFactory {
             "hercules.grpc.max_inbound_message_size.bytes",
             4 * 1024 * 1024);
 
-    static final RpcResponseFactory RESPONSE_FACTORY = new GrpcResponseFactory();
+    private static final RpcResponseFactory RESPONSE_FACTORY = new GrpcResponseFactory();
 
-    final Map<String, Message> parserClasses = new ConcurrentHashMap<>();
+    private static final Map<String, Message> parserClasses = new ConcurrentHashMap<>();
 
-    final MarshallerRegistry defaultMarshallerRegistry = new MarshallerRegistry() {
+    private static final MarshallerRegistry defaultMarshallerRegistry = new MarshallerRegistry() {
         @Override
         public Message findResponseInstanceByRequest(final String reqCls) {
             return MarshallerHelper
@@ -56,6 +54,18 @@ public class GrpcRpcFactory implements RpcFactory {
         }
     };
 
+    static {
+        if (Utils.isRpcProcessorInterestPreferProtoName()) {
+            parserClasses.put(RpcRequests.PingRequest.getDescriptor().getFullName(), RpcRequests.PingRequest.getDefaultInstance());
+            defaultMarshallerRegistry.registerResponseInstance(RpcRequests.PingRequest.getDescriptor().getFullName(),
+                    RpcRequests.ErrorResponse.getDefaultInstance());
+        } else {
+            parserClasses.put(RpcRequests.PingRequest.class.getName(), RpcRequests.PingRequest.getDefaultInstance());
+            defaultMarshallerRegistry.registerResponseInstance(RpcRequests.PingRequest.class.getName(),
+                    RpcRequests.ErrorResponse.getDefaultInstance());
+        }
+    }
+
     @Override
     public RpcFactoryHelper.RpcFactoryType factoryType() {
         return RpcFactoryHelper.RpcFactoryType.GRPC;
@@ -63,15 +73,15 @@ public class GrpcRpcFactory implements RpcFactory {
 
     @Override
     public void registerProtobufSerializer(final String className, final Object... args) {
-        this.parserClasses.put(className, (Message) args[0]);
+        parserClasses.put(className, (Message) args[0]);
         if (args.length == 2) {
-            this.defaultMarshallerRegistry.registerResponseInstance(className, (Message) args[1]);
+            defaultMarshallerRegistry.registerResponseInstance(className, (Message) args[1]);
         }
     }
 
     @Override
     public RpcClient createRpcClient(final ConfigHelper<RpcClient> helper) {
-        final RpcClient rpcClient = new GrpcClient(this.parserClasses, getMarshallerRegistry());
+        final RpcClient rpcClient = new GrpcClient(parserClasses, getMarshallerRegistry());
         if (helper != null) {
             helper.config(rpcClient);
         }
@@ -88,7 +98,7 @@ public class GrpcRpcFactory implements RpcFactory {
                 .directExecutor() //
                 .maxInboundMessageSize(RPC_MAX_INBOUND_MESSAGE_SIZE) //
                 .build();
-        final RpcServer rpcServer = new GrpcServer(server, handlerRegistry, this.parserClasses, getMarshallerRegistry());
+        final RpcServer rpcServer = new GrpcServer(server, handlerRegistry, parserClasses, getMarshallerRegistry());
         if (helper != null) {
             helper.config(rpcServer);
         }
