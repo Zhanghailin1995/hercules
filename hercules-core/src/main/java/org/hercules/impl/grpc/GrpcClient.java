@@ -15,6 +15,7 @@ import org.hercules.option.RpcOptions;
 import org.hercules.util.DirectExecutor;
 import org.hercules.util.Endpoint;
 import org.hercules.util.Requires;
+import org.hercules.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,16 +130,16 @@ public class GrpcClient implements RpcClient {
         });
     }
 
-    @Override
-    public void registerProtobufSerializer(String className, Object... args) {
-        this.parserClasses.put(className, (Message) args[0]);
-        this.marshallerRegistry.registerResponseInstance(className, (Message) args[1]);
-    }
+//    @Override
+//    public void registerProtobufSerializer(String className, Object... args) {
+//        this.parserClasses.put(className, (Message) args[0]);
+//        this.marshallerRegistry.registerResponseInstance(className, (Message) args[1]);
+//    }
 
     private MethodDescriptor<Message, Message> getCallMethod(final Object request) {
         // use descriptor full name replace  class name for support cross language call
         final String interest;
-        if (request instanceof Message) {
+        if (request instanceof Message && Utils.isRpcProcessorInterestPreferProtoName()) {
             interest = ((Message) request).getDescriptorForType().getFullName();
         } else {
             interest = request.getClass().getName();

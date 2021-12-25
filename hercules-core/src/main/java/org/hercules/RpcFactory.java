@@ -18,6 +18,7 @@ package org.hercules;
 
 import org.hercules.option.RpcOptions;
 import org.hercules.util.Endpoint;
+import org.hercules.util.RpcFactoryHelper;
 
 /**
  * Raft RPC service factory.
@@ -27,6 +28,8 @@ import org.hercules.util.Endpoint;
 public interface RpcFactory {
 
     RpcResponseFactory DEFAULT = new RpcResponseFactory() {};
+
+    RpcFactoryHelper.RpcFactoryType factoryType();
 
     /**
      * Register serializer with class name.

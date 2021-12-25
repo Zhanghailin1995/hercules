@@ -34,11 +34,16 @@ public interface RpcServer extends Lifecycle<Void> {
      *
      * @param processor the user processor which has a interest
      */
-    void registerProcessor(final RpcProcessor<?> processor, Object... args);
+    void registerProcessor(final RpcProcessor<?> processor);
 
     /**
      *
      * @return bound port
      */
     int boundPort();
+
+    /**
+     * Await termination on the main thread since the grpc library uses daemon threads.
+     */
+    void awaitTermination()  throws InterruptedException;
 }

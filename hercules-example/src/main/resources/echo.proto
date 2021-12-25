@@ -1,0 +1,14 @@
+syntax="proto2";
+
+package echo;
+
+option java_package="org.hercules.example.echo";
+option java_outer_classname = "Echo";
+
+message EchoRequest {
+    required string reqMsg = 1;
+}
+
+message EchoResponse {
+    required string respMsg = 1;
+}

@@ -31,7 +31,7 @@ public class RpcRequestsTest {
                 .setSendTimestamp(System.currentTimeMillis()) //
                 .build();
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 3; i++) {
             try {
                 final Object resp = client.invokeSync(target, req, 3000);
                 System.out.println(resp);

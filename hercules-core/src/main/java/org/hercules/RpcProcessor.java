@@ -50,8 +50,9 @@ public interface RpcProcessor<T> {
          * Select a executor.
          *
          * @param reqClass  request class name
+         * @param reqHeader request header
          * @return a executor
          */
-        Executor select(final String reqClass);
+        Executor select(final String reqClass, final Object reqHeader);
     }
 }

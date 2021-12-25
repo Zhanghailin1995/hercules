@@ -20,6 +20,7 @@ import org.hercules.RpcContext;
 import org.hercules.RpcProcessor;
 import org.hercules.proto.RpcRequests;
 import org.hercules.util.RpcFactoryHelper;
+import org.hercules.util.Utils;
 
 /**
  * Ping request processor.
@@ -32,13 +33,17 @@ public class PingRequestProcessor implements RpcProcessor<RpcRequests.PingReques
     @Override
     public void handleRequest(final RpcContext rpcCtx, final RpcRequests.PingRequest request) {
         rpcCtx.sendResponse( //
-            RpcFactoryHelper //
-                .responseFactory() //
-                .newResponse(RpcRequests.ErrorResponse.getDefaultInstance(), 0, "OK"));
+                RpcFactoryHelper //
+                        .responseFactory() //
+                        .newResponse(RpcRequests.ErrorResponse.getDefaultInstance(), 0, "OK"));
     }
 
     @Override
     public String interest() {
-        return RpcRequests.PingRequest.getDescriptor().getFullName();
+        if (RpcFactoryHelper.rpcFactory().factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC)
+                && Utils.isRpcProcessorInterestPreferProtoName()) {
+            return RpcRequests.PingRequest.getDescriptor().getFullName();
+        }
+        return RpcRequests.PingRequest.class.getName();
     }
 }

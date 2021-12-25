@@ -32,6 +32,16 @@
             <artifactId>grpc-stub</artifactId>
         </dependency>
 
+        <!--sofa bolt-->
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>bolt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.alipay.sofa</groupId>
+            <artifactId>hessian</artifactId>
+        </dependency>
+
         <!-- junit -->
         <dependency>
             <groupId>junit</groupId>
@@ -63,6 +73,11 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-jcl</artifactId>
             <scope>test</scope>
+        </dependency>
+        <!-- disruptor -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
         </dependency>
     </dependencies>
 

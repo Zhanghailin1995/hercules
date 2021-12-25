@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>hercules-core</module>
+        <module>hercules-example</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -29,10 +30,24 @@
         <powermock.version>1.6.0</powermock.version>
         <log4j.version>2.17.0</log4j.version>
         <grpc.version>1.30.0</grpc.version>
+        <bolt.version>1.6.4</bolt.version>
+        <hessian.version>3.3.6</hessian.version>
+        <disruptor.version>3.3.7</disruptor.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <!-- sub modules -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hercules-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>hercules-example</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- log facade -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -100,6 +115,23 @@
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-stub</artifactId>
                 <version>${grpc.version}</version>
+            </dependency>
+            <!--sofa bolt-->
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>bolt</artifactId>
+                <version>${bolt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alipay.sofa</groupId>
+                <artifactId>hessian</artifactId>
+                <version>${hessian.version}</version>
+            </dependency>
+            <!-- disruptor -->
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>${disruptor.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

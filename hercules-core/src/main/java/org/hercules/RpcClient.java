@@ -85,10 +85,4 @@ public interface RpcClient extends Lifecycle<RpcOptions> {
     void invokeAsync(final Endpoint endpoint, final Object request, final InvokeContext ctx, final InvokeCallback callback,
                      final long timeoutMs) throws InterruptedException, RemotingException;
 
-    /**
-     * Register protobuf serializer
-     * @param className req class name
-     * @param args req instance,res instance
-     */
-    void registerProtobufSerializer(final String className, final Object... args);
 }

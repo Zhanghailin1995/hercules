@@ -25,8 +25,14 @@ import org.hercules.RpcResponseFactory;
  */
 public class RpcFactoryHelper {
 
-    private static final RpcFactory RPC_FACTORY = RpcServiceLoader.load(RpcFactory.class) //
-                                                        .first();
+    public enum RpcFactoryType {
+        BOLT,
+        GRPC,
+    }
+
+    private static RpcFactory RPC_FACTORY = RpcServiceLoader.load(RpcFactory.class) //
+            .first();
+
 
     public static RpcFactory rpcFactory() {
         return RPC_FACTORY;
@@ -35,4 +41,7 @@ public class RpcFactoryHelper {
     public static RpcResponseFactory responseFactory() {
         return RPC_FACTORY.getRpcResponseFactory();
     }
+
+
+
 }

@@ -17,6 +17,9 @@ public final class Utils {
     private static final int CPUS = SystemPropertyUtil.getInt(
             "hercules.available_processors", Runtime.getRuntime().availableProcessors());
 
+    private static final boolean RPC_PROCESSOR_INTEREST_PREFER_PROTO_NAME = SystemPropertyUtil.getBoolean(
+            "hercules.rpc.rpc_processor_interest_prefer_proto_name", false);
+
 
     /**
      * ANY IP address 0.0.0.0
@@ -28,5 +31,9 @@ public final class Utils {
      */
     public static int cpus() {
         return CPUS;
+    }
+
+    public static boolean isRpcProcessorInterestPreferProtoName() {
+        return RPC_PROCESSOR_INTEREST_PREFER_PROTO_NAME;
     }
 }

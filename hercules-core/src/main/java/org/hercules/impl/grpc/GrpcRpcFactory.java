@@ -11,6 +11,7 @@ import org.hercules.RpcResponseFactory;
 import org.hercules.RpcServer;
 import org.hercules.util.Endpoint;
 import org.hercules.util.Requires;
+import org.hercules.util.RpcFactoryHelper;
 import org.hercules.util.SPI;
 
 import java.util.Map;
@@ -26,7 +27,7 @@ public class GrpcRpcFactory implements RpcFactory {
 
 
     static final String FIXED_METHOD_NAME = "_call";
-    
+
     static final int RPC_SERVER_PROCESSOR_POOL_SIZE = SystemPropertyUtil
             .getInt(
                     "hercules.grpc.default_rpc_server_processor_pool_size",
@@ -56,8 +57,16 @@ public class GrpcRpcFactory implements RpcFactory {
     };
 
     @Override
+    public RpcFactoryHelper.RpcFactoryType factoryType() {
+        return RpcFactoryHelper.RpcFactoryType.GRPC;
+    }
+
+    @Override
     public void registerProtobufSerializer(final String className, final Object... args) {
         this.parserClasses.put(className, (Message) args[0]);
+        if (args.length == 2) {
+            this.defaultMarshallerRegistry.registerResponseInstance(className, (Message) args[1]);
+        }
     }
 
     @Override

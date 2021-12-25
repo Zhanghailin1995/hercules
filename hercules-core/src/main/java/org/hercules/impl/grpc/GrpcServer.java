@@ -100,18 +100,10 @@ public class GrpcServer implements RpcServer {
         this.closedEventListeners.add(listener);
     }
 
-    private void registerProtobufSerializer(String className, Object... args) {
-        this.parserClasses.put(className, (Message) args[0]);
-        this.marshallerRegistry.registerResponseInstance(className, (Message) args[1]);
-    }
-
     @SuppressWarnings("unchecked")
     @Override
-    public void registerProcessor(final RpcProcessor processor, Object... args) {
+    public void registerProcessor(final RpcProcessor processor) {
         final String interest = processor.interest();
-        if (args != null && args.length >= 2) {
-            registerProtobufSerializer(interest, args);
-        }
         final Message reqIns = Requires.requireNonNull(this.parserClasses.get(interest), "null default instance: " + interest);
         final MethodDescriptor<Message, Message> method = MethodDescriptor //
                 .<Message, Message>newBuilder() //
@@ -157,7 +149,7 @@ public class GrpcServer implements RpcServer {
                     final RpcProcessor.ExecutorSelector selector = processor.executorSelector();
                     Executor executor;
                     if (selector != null) {
-                        executor = selector.select(interest);
+                        executor = selector.select(interest, null);
                     } else {
                         executor = processor.executor();
                     }
@@ -187,6 +179,13 @@ public class GrpcServer implements RpcServer {
         return this.server.getPort();
     }
 
+    @Override
+    public void awaitTermination() throws InterruptedException {
+        if (server != null) {
+            server.awaitTermination();
+        }
+    }
+
     public void setDefaultExecutor(ExecutorService defaultExecutor) {
         this.defaultExecutor = defaultExecutor;
     }
@@ -207,4 +206,5 @@ public class GrpcServer implements RpcServer {
         this.serverInterceptors.add(new RemoteAddressInterceptor());
         this.serverInterceptors.add(new ConnectionInterceptor());
     }
+
 }
