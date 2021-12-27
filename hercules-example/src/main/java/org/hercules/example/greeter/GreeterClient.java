@@ -31,7 +31,7 @@ public class GreeterClient {
         final RpcClient client = rpcFactory.createRpcClient();
         client.init(null);
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 10000; i++) {
             final Greeter.GreeterRequest req = Greeter.GreeterRequest.newBuilder() //
                     .setName("zhanghailin") //
                     .build();
@@ -44,7 +44,7 @@ public class GreeterClient {
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-            // Thread.sleep(1000);
+            Thread.sleep(1000);
         }
     }
 }
