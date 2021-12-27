@@ -56,8 +56,8 @@ public class GrpcRpcFactory implements RpcFactory {
 
     static {
         if (Utils.isRpcProcessorInterestPreferProtoName()) {
-            parserClasses.put(RpcRequests.PingRequest.getDescriptor().getFullName(), RpcRequests.PingRequest.getDefaultInstance());
-            defaultMarshallerRegistry.registerResponseInstance(RpcRequests.PingRequest.getDescriptor().getFullName(),
+            parserClasses.put(Utils.generateGrpcServiceName(RpcRequests.PingRequest.getDescriptor().getFullName()), RpcRequests.PingRequest.getDefaultInstance());
+            defaultMarshallerRegistry.registerResponseInstance(Utils.generateGrpcServiceName(RpcRequests.PingRequest.getDescriptor().getFullName()),
                     RpcRequests.ErrorResponse.getDefaultInstance());
         } else {
             parserClasses.put(RpcRequests.PingRequest.class.getName(), RpcRequests.PingRequest.getDefaultInstance());

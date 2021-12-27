@@ -42,7 +42,8 @@ public class PingRequestProcessor implements RpcProcessor<RpcRequests.PingReques
     public String interest() {
         if (RpcFactoryHelper.rpcFactory().factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC)
                 && Utils.isRpcProcessorInterestPreferProtoName()) {
-            return RpcRequests.PingRequest.getDescriptor().getFullName();
+            // return RpcRequests.PingRequest.getDescriptor().getFullName();
+            return Utils.generateGrpcServiceName(RpcRequests.PingRequest.getDescriptor().getFullName());
         }
         return RpcRequests.PingRequest.class.getName();
     }

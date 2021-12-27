@@ -1,8 +1,7 @@
-package org.hercules.example.echo;
+package org.hercules.example.greeter;
 
 import org.hercules.RpcFactory;
 import org.hercules.RpcServer;
-import org.hercules.impl.PingRequestProcessor;
 import org.hercules.util.Endpoint;
 import org.hercules.util.RpcFactoryHelper;
 import org.hercules.util.Utils;
@@ -12,7 +11,7 @@ import org.hercules.util.Utils;
  *
  * @author zhanghailin
  */
-public class EchoServer {
+public class GreeterServer {
 
     public static void main(String[] args) throws InterruptedException {
         System.setProperty("hercules.rpc.rpc_processor_interest_prefer_proto_name", "true");
@@ -22,19 +21,17 @@ public class EchoServer {
         if (rpcFactory.factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC)
                 && Utils.isRpcProcessorInterestPreferProtoName()) {
             rpcFactory.registerProtobufSerializer(
-                    Utils.generateGrpcServiceName(Echo.EchoRequest.getDescriptor().getFullName()),
-                    Echo.EchoRequest.getDefaultInstance(),
-                    Echo.EchoResponse.getDefaultInstance());
+                    Utils.generateGrpcServiceName(Greeter.GreeterRequest.getDescriptor().getFullName()),
+                    Greeter.GreeterRequest.getDefaultInstance(),
+                    Greeter.GreeterReply.getDefaultInstance());
         } else {
-            rpcFactory.registerProtobufSerializer(Echo.EchoRequest.class.getName(), EchoSerializer.INSTANCE);
-            rpcFactory.registerProtobufSerializer(Echo.EchoResponse.class.getName(), EchoSerializer.INSTANCE);
+            throw new UnsupportedOperationException("not support bolt");
         }
 
         final RpcServer server = rpcFactory.createRpcServer(new Endpoint("127.0.0.1", 19992));
 
         // if use BOLT, The second and subsequent parameters are not required
-        server.registerProcessor(new PingRequestProcessor());
-        server.registerProcessor(new EchoRequestProcessor());
+        server.registerProcessor(new GreeterRequestProcessor());
 
         server.init(null);
         server.awaitTermination();

@@ -1,8 +1,7 @@
-package org.hercules.example.echo;
+package org.hercules.example.greeter;
 
 import org.hercules.RpcClient;
 import org.hercules.RpcFactory;
-import org.hercules.proto.RpcRequests;
 import org.hercules.util.Endpoint;
 import org.hercules.util.RpcFactoryHelper;
 import org.hercules.util.Utils;
@@ -12,7 +11,7 @@ import org.hercules.util.Utils;
  *
  * @author zhanghailin
  */
-public class EchoClient {
+public class GreeterClient {
 
     public static void main(String[] args) throws InterruptedException {
         System.setProperty("hercules.rpc.rpc_processor_interest_prefer_proto_name", "true");
@@ -22,40 +21,30 @@ public class EchoClient {
         // bolt and grpc register serializer is different
         if (rpcFactory.factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC) && Utils.isRpcProcessorInterestPreferProtoName()) {
             rpcFactory.registerProtobufSerializer(
-                    Utils.generateGrpcServiceName(Echo.EchoRequest.getDescriptor().getFullName()),
-                    Echo.EchoRequest.getDefaultInstance(),
-                    Echo.EchoResponse.getDefaultInstance());
+                    Utils.generateGrpcServiceName(Greeter.GreeterRequest.getDescriptor().getFullName()),
+                    Greeter.GreeterRequest.getDefaultInstance(),
+                    Greeter.GreeterReply.getDefaultInstance());
         } else {
-            rpcFactory.registerProtobufSerializer(Echo.EchoRequest.class.getName(), EchoSerializer.INSTANCE);
-            rpcFactory.registerProtobufSerializer(Echo.EchoResponse.class.getName(), EchoSerializer.INSTANCE);
+            throw new UnsupportedOperationException("not support bolt");
         }
         // create
         final RpcClient client = rpcFactory.createRpcClient();
         client.init(null);
 
-
-        final RpcRequests.PingRequest ping = RpcRequests.PingRequest.newBuilder() //
-                .setSendTimestamp(System.currentTimeMillis()) //
-                .build();
-
-        try {
-            final Object resp = client.invokeSync(target, ping, 3000);
-            System.out.println(resp);
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-
         for (int i = 0; i < 15; i++) {
-            final Echo.EchoRequest req = Echo.EchoRequest.newBuilder() //
-                    .setReqMsg(String.valueOf(System.currentTimeMillis())) //
+            final Greeter.GreeterRequest req = Greeter.GreeterRequest.newBuilder() //
+                    .setName("zhanghailin") //
                     .build();
             try {
+                long start = System.currentTimeMillis();
                 final Object resp = client.invokeSync(target, req, 3000);
+                long end = System.currentTimeMillis();
                 System.out.println(resp);
+                System.out.println("cost: " + (end-start));
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-            Thread.sleep(1000);
+            // Thread.sleep(1000);
         }
     }
 }

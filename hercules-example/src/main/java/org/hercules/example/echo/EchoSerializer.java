@@ -107,7 +107,7 @@ public class EchoSerializer implements CustomSerializer {
         try {
             return (T) handle.invoke(bs);
         } catch (Throwable t) {
-            throw new com.sun.xml.internal.ws.encoding.soap.SerializationException(t);
+            throw new org.hercules.error.SerializationException(t);
         }
     }
 

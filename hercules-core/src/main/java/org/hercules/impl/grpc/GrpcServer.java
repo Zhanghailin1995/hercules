@@ -100,6 +100,11 @@ public class GrpcServer implements RpcServer {
         this.closedEventListeners.add(listener);
     }
 
+    private String dbg(String msg) {
+        LOG.info(msg);
+        return msg;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void registerProcessor(final RpcProcessor processor) {
@@ -109,7 +114,7 @@ public class GrpcServer implements RpcServer {
                 .<Message, Message>newBuilder() //
                 .setType(MethodDescriptor.MethodType.UNARY) //
                 .setFullMethodName(
-                        MethodDescriptor.generateFullMethodName(processor.interest(), GrpcRpcFactory.FIXED_METHOD_NAME)) //
+                        dbg(MethodDescriptor.generateFullMethodName(processor.interest(), GrpcRpcFactory.FIXED_METHOD_NAME))) //
                 .setRequestMarshaller(ProtoUtils.marshaller(reqIns)) //
                 .setResponseMarshaller(ProtoUtils.marshaller(this.marshallerRegistry.findResponseInstanceByRequest(interest))) //
                 .build();
