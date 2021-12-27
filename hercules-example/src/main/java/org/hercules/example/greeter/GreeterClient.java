@@ -21,7 +21,7 @@ public class GreeterClient {
         // bolt and grpc register serializer is different
         if (rpcFactory.factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC) && Utils.isRpcProcessorInterestPreferProtoName()) {
             rpcFactory.registerProtobufSerializer(
-                    Utils.generateGrpcServiceName(Greeter.GreeterRequest.getDescriptor().getFullName()),
+                    Utils.generateGrpcServiceName(Greeter.GreeterRequest.getDescriptor().getFullName()), // full method name greeter.GreeterRequestService/_call
                     Greeter.GreeterRequest.getDefaultInstance(),
                     Greeter.GreeterReply.getDefaultInstance());
         } else {
