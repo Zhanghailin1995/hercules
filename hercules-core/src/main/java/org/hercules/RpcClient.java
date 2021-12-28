@@ -67,6 +67,19 @@ public interface RpcClient extends Lifecycle<RpcOptions> {
      *
      * @param endpoint  target address
      * @param request   request object
+     * @param timeoutMs timeout millisecond
+     * @return invoke result
+     */
+    default CompletableFuture<Object> invokeWithFuture(final Endpoint endpoint, final Object request,
+                                               final long timeoutMs) throws InterruptedException, RemotingException {
+        return invokeWithFuture(endpoint, request, null, timeoutMs);
+    }
+
+    /**
+     * invoke with a future.
+     *
+     * @param endpoint  target address
+     * @param request   request object
      * @param ctx       invoke context
      * @param timeoutMs timeout millisecond
      * @return invoke result

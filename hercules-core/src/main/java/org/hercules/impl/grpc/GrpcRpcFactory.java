@@ -95,7 +95,7 @@ public class GrpcRpcFactory implements RpcFactory {
         final MutableHandlerRegistry handlerRegistry = new MutableHandlerRegistry();
         final Server server = ServerBuilder.forPort(port) //
                 .fallbackHandlerRegistry(handlerRegistry) //
-                .directExecutor() //
+                .directExecutor() // Execute application code directly in the transport thread
                 .maxInboundMessageSize(RPC_MAX_INBOUND_MESSAGE_SIZE) //
                 .build();
         final RpcServer rpcServer = new GrpcServer(server, handlerRegistry, parserClasses, getMarshallerRegistry());
