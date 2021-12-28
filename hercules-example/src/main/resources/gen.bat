@@ -1,1 +1,1 @@
-protoc -I=./   --java_out=../java/ greeter.proto
+protoc -I=./   --java_out=../java/ greeter.proto echo.proto

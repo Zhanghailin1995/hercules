@@ -25,7 +25,7 @@ public class EchoRequestProcessor implements RpcProcessor<Echo.EchoRequest> {
     public String interest() {
         if (RpcFactoryHelper.rpcFactory().factoryType().equals(RpcFactoryHelper.RpcFactoryType.GRPC)
                 && Utils.isRpcProcessorInterestPreferProtoName()) {
-            return "/"+Echo.EchoRequest.getDescriptor().getFullName()+"Service";
+            return Utils.generateGrpcServiceName(Echo.EchoRequest.getDescriptor().getFullName());
         }
         return Echo.EchoRequest.class.getName();
     }

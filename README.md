@@ -11,7 +11,7 @@
 
 - 使用grpc作为底层通信框架
 
-    开启RpcFactory SPI项目，在classpath下新增 META-INF/services/org.hercules.RpcFactory 并且写入
+    开启RpcFactory SPI，在classpath下新增 META-INF/services/org.hercules.RpcFactory 并且写入
     
     `org.hercules.impl.grpc.GrpcRpcFactory`
     
