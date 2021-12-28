@@ -16,7 +16,7 @@ public class BenchmarkServer {
         System.setProperty("hercules.bolt.channel_write_buf_high_water_mark", String.valueOf(64 * 1024 * 1024));
         System.setProperty("bolt.netty.flush_consolidation", "true");
 
-        final RpcServer server = RpcFactoryHelper.rpcFactory().createRpcServer(new Endpoint("127.0.0.1", 19991));
+        final RpcServer server = RpcFactoryHelper.rpcFactory().createRpcServer(new Endpoint("127.0.0.1", 19981));
         server.registerProcessor(new BenchmarkUserProcessor());
         server.init(null);
     }

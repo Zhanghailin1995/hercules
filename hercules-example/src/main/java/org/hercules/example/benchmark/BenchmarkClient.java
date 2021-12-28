@@ -13,7 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * org.hercules.example.benchmark.BenchmarkClient
+ * org.hercules.example.benchmark.GrpcBenchmarkClient
  *
  * @author zhanghailin
  */
@@ -29,7 +29,7 @@ public class BenchmarkClient {
         System.setProperty("hercules.bolt.channel_write_buf_low_water_mark", String.valueOf(32 * 1024 * 1024));
         System.setProperty("hercules.bolt.channel_write_buf_high_water_mark", String.valueOf(64 * 1024 * 1024));
         System.setProperty("bolt.netty.flush_consolidation", "true");
-        final Endpoint target = new Endpoint("127.0.0.1", 19991);
+        final Endpoint target = new Endpoint("127.0.0.1", 19981);
 
         final RpcClient client = RpcFactoryHelper.rpcFactory().createRpcClient();
         client.init(null);

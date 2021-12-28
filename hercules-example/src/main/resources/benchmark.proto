@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package="org.hercules.example.benchmark.grpc";
+option java_outer_classname = "Benchmark";
+
+package benchmark;
+
+
+message BenchRequest {
+    bytes data = 1;
+}
+
+message BenchReply {
+    bytes data = 1;
+}
