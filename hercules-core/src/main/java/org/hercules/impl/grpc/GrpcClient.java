@@ -94,6 +94,19 @@ public class GrpcClient implements RpcClient {
     }
 
     @Override
+    public CompletableFuture<Object> invokeWithFuture(Endpoint endpoint, Object request, InvokeContext ctx, long timeoutMs) throws InterruptedException, RemotingException {
+        final CompletableFuture<Object> future = new CompletableFuture<>();
+        invokeAsync(endpoint, request, ctx, (result, err) -> {
+            if (err == null) {
+                future.complete(result);
+            } else {
+                future.completeExceptionally(err);
+            }
+        }, timeoutMs);
+        return future;
+    }
+
+    @Override
     public void invokeAsync(final Endpoint endpoint, final Object request, final InvokeContext ctx,
                             final InvokeCallback callback, final long timeoutMs) {
         Requires.requireNonNull(endpoint, "endpoint");

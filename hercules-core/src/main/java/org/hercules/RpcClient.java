@@ -4,6 +4,8 @@ import org.hercules.error.RemotingException;
 import org.hercules.option.RpcOptions;
 import org.hercules.util.Endpoint;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * org.hercules.RpcClient
  *
@@ -59,6 +61,19 @@ public interface RpcClient extends Lifecycle<RpcOptions> {
      */
     Object invokeSync(final Endpoint endpoint, final Object request, final InvokeContext ctx,
                       final long timeoutMs) throws InterruptedException, RemotingException;
+
+    /**
+     * invoke with a future.
+     *
+     * @param endpoint  target address
+     * @param request   request object
+     * @param ctx       invoke context
+     * @param timeoutMs timeout millisecond
+     * @return invoke result
+     */
+    CompletableFuture<Object> invokeWithFuture(final Endpoint endpoint, final Object request,
+                                               final InvokeContext ctx, final long timeoutMs) throws InterruptedException, RemotingException;
+
 
     /**
      * Asynchronous invocation with a callback.

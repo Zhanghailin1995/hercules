@@ -28,6 +28,7 @@ import org.hercules.util.Endpoint;
 import org.hercules.util.Requires;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 /**
@@ -37,11 +38,11 @@ import java.util.concurrent.Executor;
  */
 public class BoltRpcClient implements RpcClient {
 
-    public static final String                      BOLT_CTX                       = "BOLT_CTX";
-    public static final String                      BOLT_REJECTED_EXECUTION_POLICY = "BOLT_REJECTED_EXECUTION_POLICY";
+    public static final String BOLT_CTX = "BOLT_CTX";
+    public static final String BOLT_REJECTED_EXECUTION_POLICY = "BOLT_REJECTED_EXECUTION_POLICY";
 
     private final com.alipay.remoting.rpc.RpcClient rpcClient;
-    private com.alipay.remoting.InvokeContext       defaultInvokeCtx;
+    private com.alipay.remoting.InvokeContext defaultInvokeCtx;
 
     public BoltRpcClient(com.alipay.remoting.rpc.RpcClient rpcClient) {
         this.rpcClient = Requires.requireNonNull(rpcClient, "rpcClient");
@@ -51,7 +52,7 @@ public class BoltRpcClient implements RpcClient {
     public boolean init(final RpcOptions opts) {
         rpcClient.option(BoltClientOption.NETTY_FLUSH_CONSOLIDATION, true);
         this.rpcClient.initWriteBufferWaterMark(BoltRpcFactory.CHANNEL_WRITE_BUF_LOW_WATER_MARK,
-            BoltRpcFactory.CHANNEL_WRITE_BUF_HIGH_WATER_MARK);
+                BoltRpcFactory.CHANNEL_WRITE_BUF_HIGH_WATER_MARK);
         this.rpcClient.enableReconnectSwitch();
         this.rpcClient.startup();
         return true;
@@ -80,7 +81,6 @@ public class BoltRpcClient implements RpcClient {
         this.rpcClient.closeConnection(endpoint.toString());
     }
 
-
     @Override
     public Object invokeSync(final Endpoint endpoint, final Object request, final InvokeContext ctx,
                              final long timeoutMs) throws InterruptedException, RemotingException {
@@ -95,13 +95,29 @@ public class BoltRpcClient implements RpcClient {
     }
 
     @Override
+    public CompletableFuture<Object> invokeWithFuture(Endpoint endpoint, Object request, InvokeContext ctx,
+                                                      long timeoutMs) throws InterruptedException, RemotingException {
+        Requires.requireNonNull(endpoint, "endpoint");
+        final CompletableFuture<Object> future = new CompletableFuture<>();
+        invokeAsync(endpoint, request ,ctx, (result, err) -> {
+            if (err == null) {
+                future.complete(result);
+            } else {
+                future.completeExceptionally(err);
+            }
+        }, timeoutMs);
+
+        return future;
+    }
+
+    @Override
     public void invokeAsync(final Endpoint endpoint, final Object request, final InvokeContext ctx,
                             final InvokeCallback callback, final long timeoutMs) throws InterruptedException,
-                                                                                RemotingException {
+            RemotingException {
         Requires.requireNonNull(endpoint, "endpoint");
         try {
             this.rpcClient.invokeWithCallback(endpoint.toString(), request, getBoltInvokeCtx(ctx),
-                getBoltCallback(callback, ctx), (int) timeoutMs);
+                    getBoltCallback(callback, ctx), (int) timeoutMs);
         } catch (final com.alipay.remoting.rpc.exception.InvokeTimeoutException e) {
             throw new InvokeTimeoutException(e);
         } catch (final com.alipay.remoting.exception.RemotingException e) {
@@ -123,7 +139,7 @@ public class BoltRpcClient implements RpcClient {
 
     private RejectedExecutionPolicy getRejectedPolicy(final InvokeContext ctx) {
         return ctx == null ? RejectedExecutionPolicy.CALLER_HANDLE_EXCEPTION : ctx.getOrDefault(
-            BOLT_REJECTED_EXECUTION_POLICY, RejectedExecutionPolicy.CALLER_HANDLE_EXCEPTION);
+                BOLT_REJECTED_EXECUTION_POLICY, RejectedExecutionPolicy.CALLER_HANDLE_EXCEPTION);
     }
 
     private com.alipay.remoting.InvokeContext getBoltInvokeCtx(final InvokeContext ctx) {
@@ -154,7 +170,7 @@ public class BoltRpcClient implements RpcClient {
 
     private static class BoltCallback implements com.alipay.remoting.RejectionProcessableInvokeCallback {
 
-        private final InvokeCallback          callback;
+        private final InvokeCallback callback;
         private final RejectedExecutionPolicy rejectedPolicy;
 
         private BoltCallback(final InvokeCallback callback, final RejectedExecutionPolicy rejectedPolicy) {
